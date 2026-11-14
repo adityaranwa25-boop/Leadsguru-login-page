@@ -65,17 +65,16 @@
       cursor: pointer;
     }
 
+    #message {
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
     .login-link {
       display: block;
       margin-top: 20px;
       color: #4f46e5;
       text-decoration: none;
-    }
-
-    #message {
-      margin-top: 15px;
-      color: #4f46e5;
-      font-weight: bold;
     }
   </style>
 </head>
@@ -90,34 +89,39 @@
       Create Your Account
     </div>
 
-    <form onsubmit="registerUser(event)">
+    <form id="registerForm">
 
       <input
         type="text"
+        id="name"
         placeholder="Full Name"
         required
       >
 
       <input
         type="tel"
+        id="mobile"
         placeholder="Mobile Number"
         required
       >
 
       <input
         type="email"
+        id="email"
         placeholder="Email Address"
         required
       >
 
       <input
         type="password"
+        id="password"
         placeholder="Create Password"
         required
       >
 
       <input
         type="password"
+        id="confirmPassword"
         placeholder="Confirm Password"
         required
       >
@@ -136,13 +140,104 @@
 
   </div>
 
-  <script>
-    function registerUser(event) {
-      event.preventDefault();
+  <script type="module">
 
-      document.getElementById("message").innerText =
-        "Registration system will be connected soon.";
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+    import {
+      getAuth,
+      createUserWithEmailAndPassword
     }
+      from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyBxzvTEqz6Vsy99PEa9jufF-57cVlCMBOA",
+  authDomain: "leads-guru-b88bc.firebaseapp.com",
+  projectId: "leads-guru-b88bc",
+  storageBucket: "leads-guru-b88bc.firebasestorage.app",
+  messagingSenderId: "826171584448",
+  appId: "1:826171584448:web:0d41c37b895a679775e225",
+  measurementId: "G-3PKGX5C7DH"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    document
+      .getElementById("registerForm")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const email =
+          document.getElementById("email").value;
+
+        const password =
+          document.getElementById("password").value;
+
+        const confirmPassword =
+          document.getElementById("confirmPassword").value;
+
+        const message =
+          document.getElementById("message");
+
+
+        if (password !== confirmPassword) {
+
+          message.innerText =
+            "Passwords do not match.";
+
+          message.style.color = "red";
+
+          return;
+        }
+
+
+        try {
+
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+
+          message.innerText =
+            "Account created successfully!";
+
+          message.style.color = "green";
+
+          document
+            .getElementById("registerForm")
+            .reset();
+
+        } catch (error) {
+
+          message.innerText =
+            error.message;
+
+          message.style.color = "red";
+
+        }
+
+      });
+
   </script>
 
 </body>
